@@ -16,6 +16,8 @@ CFLAGS = -std=c11 -Ofast -funroll-loops -Wall -Wextra -Wno-unused-result
 	$(CC) problem_004.c -o bin_004 $(CFLAGS)
 5: problem_005.c
 	$(CC) problem_005.c -o bin_005 $(CFLAGS)
+6: problem_006.c
+	$(CC) problem_006.c -o bin_006 $(CFLAGS)
 
 clean:
 	rm bin_*
