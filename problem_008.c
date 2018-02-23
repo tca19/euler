@@ -33,8 +33,8 @@ int32_t main()
 	for (int32_t i = 0; i < 1000-length; ++i)
 	{
 		prod = 1;
-		for (int32_t j = 0; j < length; ++j)
-			prod *= digits[i+j] - '0';
+		for (int32_t k = i; k < i+length; ++k)
+			prod *= digits[k] - '0';
 
 		if (prod > greatest)
 			greatest = prod;
