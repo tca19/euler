@@ -6,7 +6,6 @@
 /* Multiply the number represented by ar (1 digit per cell) per n. */
 void mutiply(uint8_t* ar, int32_t size, int32_t n)
 {
-
 	int32_t carry = 0, s;
 	for (int32_t i = 0; i < size; ++i)
 	{
@@ -33,7 +32,6 @@ int32_t main()
 		sum += number[size-1];
 
 	printf("Problem 16: %" PRIu64 "\n", sum);
-
 	free(number);
 	return 0;
 }
