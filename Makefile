@@ -38,6 +38,8 @@ CFLAGS = -std=c11 -Ofast -funroll-loops -Wall -Wextra -Wno-unused-result
 	$(CC) problem_015.c -o bin_015 $(CFLAGS)
 16: problem_016.c
 	$(CC) problem_016.c -o bin_016 $(CFLAGS)
+17: problem_017.c
+	$(CC) problem_017.c -o bin_017 $(CFLAGS)
 20: problem_020.c
 	$(CC) problem_020.c -o bin_020 $(CFLAGS)
 
