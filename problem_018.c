@@ -3,7 +3,7 @@
 
 int32_t main()
 {
-	const int32_t SIZE = 15;
+	int32_t SIZE = 15;
 	int32_t triangle[15][15] = {
 		{75,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 		{95, 64,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
@@ -23,19 +23,10 @@ int32_t main()
 	};
 
 	for (int32_t i = SIZE-2; i > -1; --i)
-	{
 		for (int32_t j = 0; j < i+1; ++j)
-		{
-			if (triangle[i+1][j] > triangle[i+1][j+1])
-				triangle[i][j] += triangle[i+1][j];
-			else
-				triangle[i][j] += triangle[i+1][j+1];
-		}
-	}
+			triangle[i][j] += (triangle[i+1][j] > triangle[i+1][j+1]) ?
+			                   triangle[i+1][j] : triangle[i+1][j+1];
 
 	printf("Problem 18: %d\n", triangle[0][0]);
 	return 0;
 }
-
-
-
