@@ -1,10 +1,15 @@
 #include <stdint.h>
 #include <stdio.h>
+#define SIZE 15
 
 int32_t main()
 {
-	int32_t SIZE = 15;
-	int32_t triangle[15][15] = {
+	/* At each number, we have 2 choice : left or right. So at each number,
+	 * the maximum path either comes from left or right value. We go in
+	 * reverse order, starting at bottom row and going to the top. For each
+	 * number, we add the value of the longest path between value left or
+	 * right. The final answer is the value at the top of the pyramid. */
+	int32_t triangle[SIZE][SIZE] = {
 		{75,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 		{95, 64,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 		{17, 47, 82,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
