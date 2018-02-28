@@ -1,7 +1,15 @@
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define MAX_VOCAB_SIZE 6000
+
+/* Function used by qsort to sort alphabetically names. */
+int32_t cmp_names(const void *a, const void *b)
+{
+	return strcmp(*(const char **) a, *(const char **) b);
+}
 
 int32_t main()
 {
@@ -19,7 +27,7 @@ int32_t main()
 	names    = (uint8_t**)calloc(MAX_VOCAB_SIZE, sizeof(uint8_t*));
 	names[0] = (uint8_t*)calloc(MAX_LENGTH, sizeof(uint8_t));
 
-	while ((c = fgetc(file)) != EOF)
+	while ((c = getc(file)) != EOF)
 	{
 		if (c == ',') /* word separator */
 		{
@@ -33,10 +41,24 @@ int32_t main()
 			names[n_words][l++] = c;
 	}
 
-	/* no ',' after last word, but counter needs to be incremented. */
+	/* No ',' after last word, but counter needs to be incremented. */
 	++n_words;
 
-	printf("n_words: %d\n", n_words);
+	/* Sort words alphabetically. */
+	qsort(names, n_words, sizeof(const uint8_t*), cmp_names);
+
+	/* Compute total sum of scores of all names. */
+	uint64_t total = 0, score;
+	for (int32_t pos = 0; pos < n_words; ++pos)
+	{
+		score = 0;
+		for (int32_t i = 0; names[pos][i] != 0; ++i)
+			score += names[pos][i] - 'A' + 1;
+
+		total += score * (pos+1);
+	}
+
+	printf("Problem 22: %" PRIu64 "\n", total);
 
 	/* Clear allocated memory. */
 	for (int32_t i = 0; i < n_words; ++i) free(names[i]);
