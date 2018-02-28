@@ -23,15 +23,15 @@ int32_t sum_divisors(int32_t n)
 int32_t main()
 {
 	int32_t SIZE = 10000, sum_amicable = 0, i;
-	int32_t* sum_div = (int32_t *) calloc(SIZE, sizeof(int32_t));
+	int32_t* sum_div = (int32_t*) calloc(SIZE, sizeof(int32_t));
 	sum_div[0] = 0; /* special case, 1 has no proper divisors. */
 
-	/* find sum of proper divisors for integers below 10000. */
+	/* Find sum of proper divisors for integers below 10000. */
 	for (i = 1; i < SIZE; ++i)
 		sum_div[i] = sum_divisors(i+1);
 
-	/* find amicable numbers (same sum of divisors but different. There is -1
-	 * because d(i) is stored at the cell i-1. */
+	/* Find amicable numbers (same sum of divisors but different numbers).
+	 * There is -1 because d(i) is stored at the cell i-1. */
 	for (i = 1; i < SIZE+1; ++i)
 		if (sum_div[sum_div[i-1]-1] == i && i != sum_div[i-1])
 			sum_amicable += i;
