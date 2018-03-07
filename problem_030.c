@@ -8,9 +8,11 @@ int32_t main()
 
 	for (i = 2; i < 1000000; ++i)
 	{
-		n = i;
+		n = i; /* copy because we need to modify it */
 		sum_powers = 0;
 
+		/* for each digit d of i, compute d^5 then add it to the sum of
+		 * digit powers */
 		while (n > 0)
 		{
 			d = n%10;
