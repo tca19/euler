@@ -6,7 +6,7 @@ int32_t main()
 {
 	uint64_t answer = 0, sum_powers, i, n, d;
 
-	for (i = 2; i < 1000000; ++i)
+	for (i = 2; i < 354294; ++i)
 	{
 		n = i; /* copy because we need to modify it */
 		sum_powers = 0;
