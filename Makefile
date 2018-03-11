@@ -56,16 +56,16 @@ CFLAGS = -std=c11 -Ofast -funroll-loops -Wall -Wextra -Wno-unused-result
 	$(CC) problem_001-025/problem_024.c -o bin_024 $(CFLAGS)
 25: problem_001-025/problem_025.c
 	$(CC) problem_001-025/problem_025.c -o bin_025 $(CFLAGS)
-26: problem_026.c
-	$(CC) problem_026.c -o bin_026 $(CFLAGS)
-27: problem_027.c
-	$(CC) problem_027.c -o bin_027 $(CFLAGS)
-28: problem_028.c
-	$(CC) problem_028.c -o bin_028 $(CFLAGS)
-29: problem_029.c
-	$(CC) problem_029.c -o bin_029 $(CFLAGS)
-30: problem_030.c
-	$(CC) problem_030.c -o bin_030 $(CFLAGS)
+26: problem_026-050/problem_026.c
+	$(CC) problem_026-050/problem_026.c -o bin_026 $(CFLAGS)
+27: problem_026-050/problem_027.c
+	$(CC) problem_026-050/problem_027.c -o bin_027 $(CFLAGS)
+28: problem_026-050/problem_028.c
+	$(CC) problem_026-050/problem_028.c -o bin_028 $(CFLAGS)
+29: problem_026-050/problem_029.c
+	$(CC) problem_026-050/problem_029.c -o bin_029 $(CFLAGS)
+30: problem_026-050/problem_030.c
+	$(CC) problem_026-050/problem_030.c -o bin_030 $(CFLAGS)
 
 clean:
 	rm bin_*
