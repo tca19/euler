@@ -1,32 +1,51 @@
 #include <stdio.h>
-#define LOWER 2
-#define UPPER 100
+#define MIN 2
+#define MAX 100
 
 int main(void)
 {
-	int a, b, duplicate, temp;
+	int a, b, c, i, n, exponent, n_duplicate;
+	unsigned char done[MAX-MIN+1] = {0};
 
-	duplicate = 0;
-
-	for (a = LOWER; a <= UPPER; ++a)
+	n_duplicate = 0;
+	for (a = MIN; a <= MAX; ++a)
 	{
-		temp = a;
-		for (b = LOWER; b <= UPPER; ++b)
+		n = a;
+		for (b = MIN; b <= MAX; ++b)
 		{
-			temp *= a;
-			if (temp > UPPER)
+			n *= a; /* n = a^b */
+			if (n > MAX || done[n-MIN])
 				break;
 
-			printf("a: %d, b: %d, temp: %d, dup: %d\n",
-			        a, b, temp, UPPER/b-1);
-			duplicate += UPPER / b - 1;
-			/* temp can possibly generate duplicates */
+			if (b == 2)
+			{
+				n_duplicate += MAX/2 - 1;
+				continue;
+			}
+
+			done[n-MIN] = 1;
+
+			for (c = MIN; c <= MAX; ++c)
+			{
+				exponent = b * c;
+				if (exponent <= MAX)
+				{
+					++n_duplicate;
+					continue;
+				}
+
+				for (i = MIN; i < b; ++i)
+					if (!(exponent%i) && exponent/i <= MAX)
+					{
+						++n_duplicate;
+						break;
+					}
+			}
 		}
 	}
 
-	printf("duplicate: %d\n", duplicate);
-	printf("max: %d\n", (UPPER-LOWER+1) * (UPPER-LOWER+1));
-	printf("unique: %d\n", (UPPER-LOWER+1) * (UPPER-LOWER+1) - duplicate);
+	n = (MAX-MIN+1) * (MAX-MIN+1);
+	printf("Problem 29: %d\n",  n - n_duplicate);
 
 	return 0;
 }
