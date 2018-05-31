@@ -34,29 +34,37 @@ int32_t main(void)
 			done[n-MIN] = 1;
 
 			/* if n is a square but no a cube, fourth power... its
-			 * exponent is 2. It is a duplicate for c = 1..MAX/2-1
-			 * because (a^2)^k = a^(2*k) and 2*k < MAX */
+			 * exponent is 2. It is a duplicate for c = 2..MAX/2
+			 * because (a^2)^k = a^(2*k) and 2*k <= MAX */
 			if (b == 2)
 			{
-				n_duplicate += MAX/2 - 1;
+				n_duplicate += MAX/2 - 1; /* from 2 to MAX/2 */
 				continue; /* move to next a^b candidate */
 			}
 
-			/* n is cube or fourth power or fifth power... of a. We
-			 * iterate each power of n, find the corresponding
-			 * exponent of a (because n^c = (a^b)^c = a^(b*c) and
-			 * look if it is possible to have the same value a^(b*c)
-			 * with a different combination of a^b. In that case it
-			 * means it's a duplicate. */
+			/* else n is either a cube or a fourth power or a fifth
+			 * power... of a. We iterate each power c of n, find the
+			 * corresponding exponent of a (because n^c = (a^b)^c =
+			 * a^(b*c)) and look if it is possible to have the same
+			 * value a^(b*c) with a different combination of a^b. In
+			 * that case it means it's a duplicate. */
 			for (c = MIN; c <= MAX; ++c)
 			{
 				exponent = b * c;
+
+				/* if b*c <= MAX, then a^(b*c) has been computed
+				 * before, so obviously a duplicate; move to
+				 * next power c of n */
 				if (exponent <= MAX)
 				{
 					++n_duplicate;
 					continue;
 				}
 
+				/* else, we look at previous powers i of a (i.e.
+				 * less than the current one which is b) and see
+				 * if it's possible to find an integer k such
+				 * that (a^i)^k = a^exponent. */
 				for (i = MIN; i < b; ++i)
 					if (!(exponent%i) && exponent/i <= MAX)
 					{
