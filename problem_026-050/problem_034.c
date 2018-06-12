@@ -1,7 +1,9 @@
 #include <stdio.h>
-#define MAX 10000000
+#include <stdint.h>
 
-int factorial[] = {
+#define MAX 2177280
+
+int32_t factorial[] = {
 	1,        /* 0! */
 	1,        /* 1! */
 	2,        /* 2! */
@@ -14,20 +16,20 @@ int factorial[] = {
 	362880    /* 9! */
 };
 
-int is_sum_factorial(int n)
+int32_t is_sum_factorial(int32_t n)
 {
-	int sum, i;
+	int32_t sum, i;
 
 	for (sum = 0, i = n; n != 0; n /= 10)
 		sum += factorial[n%10];
 	return sum == i;
 }
 
-int main(void)
+int32_t main(void)
 {
-	int n, answer;
+	int32_t n, answer;
 
-	for (n = 3, answer = 0; n < MAX; ++n)
+	for (n = 3, answer = 0; n <= MAX; ++n)
 		if (is_sum_factorial(n))
 			answer += n;
 
