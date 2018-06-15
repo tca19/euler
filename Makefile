@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c11 -O3 -march=native -funroll-loops -Wall -Wextra
+CFLAGS = -std=c11 -Ofast -march=native -funroll-loops -Wall -Wextra
 
 1: problem_001-025/problem_001.c
 	$(CC) problem_001-025/problem_001.c -o bin_001 $(CFLAGS)
