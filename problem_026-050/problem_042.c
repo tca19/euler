@@ -5,7 +5,7 @@
 
 #define MAXLEN 100
 
-/* word_value: return the sum of values of each letter of string s */
+/* word_value: return the sum of each letter value in string s */
 int32_t word_value(char *s)
 {
 	int32_t val;
@@ -16,51 +16,41 @@ int32_t word_value(char *s)
 }
 
 /* is_triangular: return 1 if n is a triangular number (it can be written as
- * n(n+1) / 2 */
+ * m(m+1) / 2 ) */
 int32_t is_triangular(int32_t n)
 {
 	int32_t m = (int32_t) sqrt(n*2);
 	return m*(m+1) / 2 == n;
 }
 
+/* read_word: read a word from a file that is like "A","ABILITY","ABLE"... */
 int32_t read_word(FILE *fp, char *dest)
 {
 	int32_t c;
 
-	while (!isupper(c = fgetc(fp)))
+	/* skip quotes and comma */
+	while ((c = fgetc(fp)) != EOF && !isupper(c))
 		;
-
-	printf("over? %d\n", feof(fp));
-	if (c == EOF)
-		return EOF;
-
-	/*printf("%c\n", c);*/
 	*dest++ = c;
-	while (isupper(c = fgetc(fp)))
-	{
+
+	/* read letters until it finds a comma or a quote */
+	while ((c = fgetc(fp)) != EOF && isupper(c))
 		*dest++ = c;
-		/*printf("%c\n", c);*/
-	}
 	*dest = '\0';
 
-	return 1;
+	return c;
 }
 
 int32_t main(void)
 {
 	FILE *fp;
 	char word[MAXLEN];
-	int32_t value, answer = 0;
+	int32_t answer = 0;
 
 	fp = fopen("problem_026-050/p042_words.txt", "r");
 	while (read_word(fp, word) != EOF)
-	{
-		printf("%s\n", word);
-		value = word_value(word);
-		if (is_triangular(value))
+		if (is_triangular(word_value(word)))
 			++answer;
-		printf("Problem 42: %d\n", answer);
-	}
 
 	printf("Problem 42: %d\n", answer);
 	return 0;
