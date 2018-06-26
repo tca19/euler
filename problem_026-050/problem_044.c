@@ -24,7 +24,8 @@ int64_t is_pentagonal(int64_t N)
 
 int32_t main(void)
 {
-	int64_t i, j, min_diff, p[MAX];
+	int64_t i, j;
+	uint64_t min_diff, p[MAX];
 
 	/* pre-compute the first 5000 pentagonal numbers */
 	for (i = 1; i < MAX; ++i)
