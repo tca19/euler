@@ -37,22 +37,20 @@ int32_t main(void)
 	max_sum = 0;
 
 	for (a = 1; a < 100; ++a)
+	{
+		/* reset array */
+		for (tmp = 0; tmp < 200; ++tmp)
+			digits[tmp] = 0;
+		digits[0] = 1;
+
 		for (b = 1; b < 100; ++b)
 		{
-			/* reset array */
-			for (tmp = 0; tmp < 200; ++tmp)
-				digits[tmp] = 0;
-			digits[0] = 1;
-
-			/* compute a^b */
-			tmp = b;
-			while (--tmp)
-				multiply(digits, 200, a);
-
+			multiply(digits, 200, a);
 			tmp = sum(digits, 200);
 			if (tmp > max_sum)
 				max_sum = tmp;
 		}
+	}
 
 	printf("Problem 56: %d\n", max_sum);
 	return 0;
