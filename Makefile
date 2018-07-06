@@ -111,6 +111,8 @@ CFLAGS = -std=c11 -Ofast -march=native -funroll-loops -Wall -Wextra
 	$(CC) problem_051-075/problem_055.c -o bin_055 $(CFLAGS)
 56: problem_051-075/problem_056.c
 	$(CC) problem_051-075/problem_056.c -o bin_056 $(CFLAGS)
+67: problem_051-075/problem_067.c
+	$(CC) problem_051-075/problem_067.c -o bin_067 $(CFLAGS)
 
 clean:
 	rm bin_*
