@@ -5,7 +5,8 @@
 
 int8_t sieve[N];
 
-/* init_sieve: initialize the array to test primality of a number */
+/* init_sieve: initialize the array to test primality of a number (Eratosthene
+ * sieve) */
 void init_sieve(void)
 {
 	int32_t i, j;
@@ -27,7 +28,8 @@ int32_t is_prime(int64_t n)
 {
 	int64_t p;
 
-	/* use the primality array if n is below array size */
+	/* use the sieve array if n is small enough to know its primality
+	 * directly */
 	if (n < N)
 		return sieve[n];
 
@@ -39,7 +41,7 @@ int32_t is_prime(int64_t n)
 }
 
 /* n_primes_corners: return the number of primes among the 4 corners if the
- * square has a side length of len */
+ * numbers are written is spiral and the square has a side length of len */
 int64_t n_primes_corners(int64_t len)
 {
 	int64_t i, n;
@@ -64,6 +66,8 @@ int64_t n_primes_corners(int64_t len)
 	return i;
 }
 
+/* find the len of square required so the ratio between prime and non-prime
+ * numbers on the diagional is below 10% */
 int32_t main(void)
 {
 	int32_t i, total_primes = 0;
