@@ -71,9 +71,9 @@ void print_deciphered(int32_t *deciphered_text)
 
 int32_t main(void)
 {
+	int32_t i, j, k, n, *deciphered_text, max_count_occ, answer;
 	char key[KEYSIZE], best_key[KEYSIZE];
 	char the[] = {'t', 'h', 'e'};
-	int32_t i, j, k, n, *deciphered_text, max_count_occ, answer;
 
 	read_ciphered_text("problem_051-075/p059_cipher.txt");
 	deciphered_text = calloc(size, sizeof *deciphered_text);
@@ -90,9 +90,9 @@ int32_t main(void)
 				key[2] = 'a' + k;
 				decipher(deciphered_text, key, KEYSIZE);
 				n = count_occurrence(deciphered_text, size, the, 3);
+
 				if (n > max_count_occ)
 				{
-					printf("ok with %d\n", max_count_occ);
 					memcpy(best_key, key, KEYSIZE);
 					max_count_occ = n;
 				}
@@ -100,13 +100,11 @@ int32_t main(void)
 		}
 	}
 
-
-	printf("%s\n", key);
-
+	/* now that the right key is found, decipher and sum ascii values */
+	decipher(deciphered_text, best_key, KEYSIZE);
 	for (i = 0; i < size; ++i)
 		answer += deciphered_text[i];
 
-				if (count_occurrence(deciphered_text, size, the, 3) > 3)
 	printf("Problem 59: %d\n", answer);
 	return 0;
 }
