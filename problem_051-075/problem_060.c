@@ -72,9 +72,11 @@ int32_t main(void)
 
 	init_sieve();
 
+	/* use a 2D grid to know if two integers (i,j) form a prime pair */
 	pairs = calloc(SIZE*SIZE, sizeof *pairs);
 	for (i = 0; i < SIZE; ++i)
 	{
+		/* to form a prime pair, both i and j must be primes */
 		if (!is_prime(i))
 			continue;
 
@@ -83,14 +85,14 @@ int32_t main(void)
 			if (!is_prime(j))
 				continue;
 
+			/* as well as the concatenation of i and j */
 			if (is_prime_pair(i, j))
-			{
 				pairs[i*SIZE + j] = 1;
-				pairs[j*SIZE + i] = 1;
-			}
 		}
 	}
 
+	/* create set of 5 numbers, add a number to the set only if it forms a
+	 * prime pair with all the numbers already in the set */
 	answer = 5*SIZE;
 	for (a = 0; a < SIZE; ++a)
 	{
