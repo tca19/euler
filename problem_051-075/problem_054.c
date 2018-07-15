@@ -5,6 +5,7 @@
 #include <string.h>
 
 #define HANDSIZE 5
+#define FILENAME "problem_051-075/p054_poker.txt"
 
 enum hands {
 	HIGH_CARD,       /* 0 */
@@ -82,20 +83,6 @@ struct card parse_card(char *s)
 	}
 
 	return c;
-}
-
-/* parse_hand: return an array of cards parsed from `s` (space separated) */
-void parse_hand(char *s, struct card *hand)
-{
-	int32_t i;
-	char *pch;
-	pch = strtok(s, " ");
-
-	for (i = 0; i < HANDSIZE; ++i)
-	{
-		hand[i] = parse_card(pch);
-		pch = strtok(NULL, " ");
-	}
 }
 
 int32_t is_straight(int32_t *count_value)
@@ -180,19 +167,46 @@ enum hands find_rank(struct card *hand)
 
 int32_t main(void)
 {
-	char ss[] = "3C 3D 3S 9S 9D";
-	struct card *hand;
-	int32_t i;
+	FILE *fp;
+	struct card *hand_p1, *hand_p2;
+	int32_t i, victory_p1, r1, r2;
+	char buf[10];
 
-	hand = calloc(HANDSIZE, sizeof *hand);
-	parse_hand(ss, hand);
 
-	for (i = 0; i < HANDSIZE; ++i)
+	hand_p1 = calloc(HANDSIZE, sizeof *hand_p1);
+	hand_p2 = calloc(HANDSIZE, sizeof *hand_p2);
+
+	if ((fp = fopen(FILENAME, "r")) == NULL)
 	{
-		printf("%d %d\n", hand[i].value, hand[i].color);
+		printf("ERROR: can't open %s\n", FILENAME);
+		return 1;
 	}
 
-	printf("%d\n", find_rank(hand));
+	i = victory_p1 = 0;
+	while (fscanf(fp, "%s", buf) != EOF)
+	{
+		if (i < 5)
+			hand_p1[i] = parse_card(buf);
+		else
+			hand_p2[i-5] = parse_card(buf);
+		++i;
 
+		/* if 2*HANDSIZE values are read, compare the 2 hands */
+		if (i == 2*HANDSIZE)
+		{
+			r1 = find_rank(hand_p1);
+			r2 = find_rank(hand_p2);
+
+			if (r1 > r2)
+				++victory_p1;
+			else if (r1 == r2)
+			{
+			}
+
+			i = 0; /* reset i to read next hands for P1/P2 */
+		}
+	}
+
+	printf("Problem 54: %d\n", victory_p1);
 	return 0;
 }
