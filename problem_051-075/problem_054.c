@@ -165,6 +165,45 @@ enum hands find_rank(struct card *hand)
 	return is_pair(count_value);
 }
 
+int32_t handle_tie(struct card *hand_p1, struct card *hand_p2, enum hands rank)
+{
+	/* count occurrence of each value for hands P1/P2 */
+	int32_t count_value1[15] = {0}, count_value2[15] = {0};
+	int32_t i, val1, val2;
+	for (i = 0; i < HANDSIZE; ++i)
+	{
+		++count_value1[hand_p1[i].value];
+		++count_value2[hand_p2[i].value];
+	}
+
+	/* both hands have a single pair, find value of pair and compare them */
+	if (rank == 1)
+	{
+		for (i = 0; i < 15; ++i)
+		{
+			if (count_value1[i] == 2)
+				val1 = i;
+			if (count_value2[i] == 2)
+				val2 = i;
+		}
+
+		if (val1 != val2)
+			return val1 > val2 ? 1 : 2;
+	}
+
+	/* need to compare highest values to find winner */
+	for (i = 14; i >= 0; --i)
+	{
+		if (count_value1[i] == 1 && count_value2[i] == 0)
+			return 1;
+		if (count_value2[i] == 1 && count_value1[i] == 0)
+			return 2;
+	}
+
+	printf("still tie !\n");
+	return 1;
+}
+
 int32_t main(void)
 {
 	FILE *fp;
@@ -201,6 +240,8 @@ int32_t main(void)
 				++victory_p1;
 			else if (r1 == r2)
 			{
+				if (handle_tie(hand_p1, hand_p2, r1) == 1)
+					++victory_p1;
 			}
 
 			i = 0; /* reset i to read next hands for P1/P2 */
