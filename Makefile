@@ -107,6 +107,8 @@ CFLAGS = -std=c11 -Ofast -march=native -funroll-loops -Wall -Wextra
 	$(CC) problem_051-075/problem_052.c -o bin_052 $(CFLAGS)
 53: problem_051-075/problem_053.c
 	$(CC) problem_051-075/problem_053.c -o bin_053 $(CFLAGS)
+54: problem_051-075/problem_054.c
+	$(CC) problem_051-075/problem_054.c -o bin_054 $(CFLAGS)
 55: problem_051-075/problem_055.c
 	$(CC) problem_051-075/problem_055.c -o bin_055 $(CFLAGS)
 56: problem_051-075/problem_056.c
