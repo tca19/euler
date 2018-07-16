@@ -7,6 +7,7 @@
 #define HANDSIZE 5
 #define FILENAME "problem_051-075/p054_poker.txt"
 
+/* all possible poker hand ranks, from lower to higher */
 enum hands {
 	HIGH_CARD,       /* 0 */
 	PAIR,            /* 1 */
@@ -23,16 +24,17 @@ enum hands {
 enum suit {DIAMONDS, CLUBS, HEARTS, SPADES};
 
 struct card {
-	int8_t value;
-	enum suit color;
+	int8_t value;     /* goes from 2 to 14 (J=11, Q=12, K=13, A=14) */
+	enum suit color;  /* one of the 4 possible suits */
 };
 
-/* parse_card: extract value/suit of card from string `s` ("5C" -> (5, Clubs) */
+/* parse_card: extract card value+suit from string `s` ("5C" -> {5, CLUBS}) */
 struct card parse_card(char *s)
 {
 	int32_t len = strlen(s);
 	struct card c;
 
+	/* 10 is written as T, so there should be 2 char in the parsed string */
 	if (len != 2)
 	{
 		printf("ERROR: can't parse %s\n", s);
@@ -85,10 +87,16 @@ struct card parse_card(char *s)
 	return c;
 }
 
+/* is_straight: return 1 if hand contains a straight (5 consecutive values)
+ * given the number of occurrences of each value in hand */
 int32_t is_straight(int32_t *count_value)
 {
 	int32_t i, j;
 
+	/* A straight = 5 cards with successive value has a count of 1. Each
+	 * time a count of 1 is found, check the count of successive value until
+	 * a count != 1 is found. If starting index - stopping index is 5, it is
+	 * a straight */
 	for (i = 0; i < 11; ++i)
 	{
 		if (count_value[i] == 0)
@@ -98,16 +106,17 @@ int32_t is_straight(int32_t *count_value)
 		if (j-i == 5)
 			return 1;
 	}
-
 	return 0;
 }
 
+/* is_flush: return 1 if the hand contains a flush (all cards have same suit) */
 int32_t is_flush(int32_t *count_suit)
 {
 	return (count_suit[0] == HANDSIZE || count_suit[1] == HANDSIZE
 	     || count_suit[2] == HANDSIZE || count_suit[3] == HANDSIZE);
 }
 
+/* is_three: return 1 if the hand contains three cards with the same value */
 int32_t is_three(int32_t *count_value)
 {
 	int32_t i;
@@ -117,6 +126,8 @@ int32_t is_three(int32_t *count_value)
 	return 0;
 }
 
+/* is_pair: return the number of pairs in hand (2 if TWO_PAIR, 1 if PAIR, 0 if
+ * no pair) */
 int32_t is_pair(int32_t *count_value)
 {
 	int32_t i, n;
@@ -165,9 +176,11 @@ enum hands find_rank(struct card *hand)
 	return is_pair(count_value);
 }
 
+/* handle_tie: return 1 (or 2) if hand_p1 (or hand_p2) is the winner. This is
+ * the case where both hands have rank `̣̣rank` */
 int32_t handle_tie(struct card *hand_p1, struct card *hand_p2, enum hands rank)
 {
-	/* count occurrence of each value for hands P1/P2 */
+	/* count occurrence of each value in hands P1/P2 */
 	int32_t count_value1[15] = {0}, count_value2[15] = {0};
 	int32_t i, val1, val2;
 	for (i = 0; i < HANDSIZE; ++i)
@@ -200,17 +213,16 @@ int32_t handle_tie(struct card *hand_p1, struct card *hand_p2, enum hands rank)
 			return 2;
 	}
 
-	printf("still tie !\n");
-	return 1;
+	return 0;
 }
 
+/* given a list of poker hands for P1/P2, print the number of times P1 wins */
 int32_t main(void)
 {
 	FILE *fp;
 	struct card *hand_p1, *hand_p2;
-	int32_t i, victory_p1, r1, r2;
+	int32_t i, victory_p1, rank_p1, rank_p2;
 	char buf[10];
-
 
 	hand_p1 = calloc(HANDSIZE, sizeof *hand_p1);
 	hand_p2 = calloc(HANDSIZE, sizeof *hand_p2);
@@ -224,25 +236,25 @@ int32_t main(void)
 	i = victory_p1 = 0;
 	while (fscanf(fp, "%s", buf) != EOF)
 	{
-		if (i < 5)
+		/* each line contains 2*HANDSIZE strings (card). First half is
+		 * P1 hand, second half is P2 hand */
+		if (i < HANDSIZE)
 			hand_p1[i] = parse_card(buf);
 		else
-			hand_p2[i-5] = parse_card(buf);
+			hand_p2[i-HANDSIZE] = parse_card(buf);
 		++i;
 
 		/* if 2*HANDSIZE values are read, compare the 2 hands */
 		if (i == 2*HANDSIZE)
 		{
-			r1 = find_rank(hand_p1);
-			r2 = find_rank(hand_p2);
+			rank_p1 = find_rank(hand_p1);
+			rank_p2 = find_rank(hand_p2);
 
-			if (r1 > r2)
+			if (rank_p1 > rank_p2)
 				++victory_p1;
-			else if (r1 == r2)
-			{
-				if (handle_tie(hand_p1, hand_p2, r1) == 1)
+			else if (rank_p1 == rank_p2)
+				if (handle_tie(hand_p1, hand_p2, rank_p1) == 1)
 					++victory_p1;
-			}
 
 			i = 0; /* reset i to read next hands for P1/P2 */
 		}
