@@ -1,38 +1,30 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define M 10000000000
+#define M 10000000000 /* 10^10 because only interested in the last 10 digits */
 #define LEN 10
 
-/* multiply: mutiply the number represented by the array of `digits` by `m` */
-void multiply(uint8_t *digits, int32_t m)
-{
-	int32_t i, carry;
-
-	carry = 0;
-	for (i = 0; i < LEN; ++i)
-	{
-		carry = digits[i] * m + carry;
-		digits[i] = carry%10;
-		carry /= 10;
-	}
-}
-
+/* find the last 10 digits of 28433 * 2^7830457 + 1 */
 int32_t main(void)
 {
-	uint8_t ar[LEN] = {0};
-	int32_t i, power = 7830457;
-	int64_t answer = 0;
+	/* start by computing 2^7830457. Instead of going 2 by 2 (i.e.
+	 * computing 2^1, 2^2, 2^3...), goes 24 by 24 (2^24, 2^48, 2^72 ...),
+	 * it is faster. Then goes 2 by 2 for the remaining exponent. */
+	int64_t answer = 1;
+	int32_t power  = 7830457, d = 24;
 
-	ar[0] = 1;
+	while (power > d)
+	{
+		answer = (answer << d) % M;
+		power -= d;
+	}
+
 	while (power-- > 0)
-		multiply(ar, 2);
+		answer = (answer << 1) % M;
 
-	multiply(ar, 28433);
+	/* compute the desired number, only keep its last 10 digits */
+	answer = (28433 * answer + 1) % M;
 
-	for (i = 0; i < LEN; ++i)
-		answer = 10 * answer + ar[LEN-1 - i];
-
-	printf("Problem 97: %ld\n", (answer+1) % M);
+	printf("Problem 97: %ld\n", answer);
 	return 0;
 }
