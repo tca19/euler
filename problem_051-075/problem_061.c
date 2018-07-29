@@ -63,6 +63,38 @@ void print_array(int32_t *ar, int32_t size)
 	printf("\n");
 }
 
+/* next_permutation: generate the next permutation of integers in ar */
+int32_t next_permutation(int32_t *ar, int32_t size)
+{
+	int32_t k, l, tmp;
+
+	/* find largest index k st a[k] < a[k+1] */
+	for (k = size-2; k >= 0 && ar[k] >= ar[k+1]; --k)
+		;
+	if (k < 0)
+		return -1;
+
+	/* find largest index l (l > k) st a[k] < a[l] */
+	for (l = size-1; l > k+1 && ar[k] >= ar[l]; --l)
+		;
+	if (l == size)
+		return -1;
+
+
+	printf("k=%d, l=%d ", k , l);
+	/* swap a[k] and a[l] */
+	tmp = ar[l];
+	ar[l] = ar[k];
+	ar[k] = tmp;
+
+	/* reverse array from a[k+1] up to a[size-1] */
+	for (k = k+1, l = size-1; k < l; k++, l--)
+		tmp = ar[k], ar[k] = ar[l], ar[l] = tmp;
+
+	return 1;
+}
+
+
 int32_t main(void)
 {
 	int32_t n_triangles, *triangles,
@@ -71,6 +103,13 @@ int32_t main(void)
 		n_hexas,     *hexas,
 		n_heptas,    *heptas,
 		n_octas,     *octas;
+
+	int32_t i, permutations[6] = {0, 1, 2, 3, 4, 5};
+	for (i = 0; i < 720; ++i)
+	{
+		printf("(%d)", next_permutation(permutations, 6));
+		print_array(permutations, 6);
+	}
 
 	triangles = generate_numbers(&n_triangles, compute_triangle);
 	printf("T R I A N G L E S (%d)\n", n_triangles);
