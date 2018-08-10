@@ -108,66 +108,23 @@ int32_t next_permutation(int32_t *ar, int32_t size)
 int32_t main(void)
 {
 	int32_t permutations[CYCLE_LENGTH], i, answer, found;
-	int32_t n_triangles, *triangles,
-		n_squares,   *squares,
-		n_pentas,    *pentas,
-		n_hexas,     *hexas,
-		n_heptas,    *heptas,
-		n_octas,     *octas;
-	struct type types[CYCLE_LENGTH];
 	int32_t n1, n2, n3, n4, n5, n6;
+	struct type types[CYCLE_LENGTH];
 
 	/* fill permutations array with 0,1,2,3... */
 	for (i = 0; i < CYCLE_LENGTH; ++i)
 		permutations[i] = i;
 
-	print_array(permutations, CYCLE_LENGTH);
+	types[0].numbers = generate_numbers(&types[0].n_numbers, compute_triangle);
+	types[1].numbers = generate_numbers(&types[1].n_numbers, compute_square);
+	types[2].numbers = generate_numbers(&types[2].n_numbers, compute_penta);
+	types[3].numbers = generate_numbers(&types[3].n_numbers, compute_hexa);
+	types[4].numbers = generate_numbers(&types[4].n_numbers, compute_hepta);
+	types[5].numbers = generate_numbers(&types[5].n_numbers, compute_octa);
 
-	triangles = generate_numbers(&n_triangles, compute_triangle);
-	printf("T R I A N G L E S (%d)\n", n_triangles);
-	print_array(triangles, n_triangles);
-	types[0].n_numbers = n_triangles;
-	types[0].numbers   = triangles;
-
-	squares = generate_numbers(&n_squares, compute_square);
-	printf("S Q U A R E S (%d)\n", n_squares);
-	print_array(squares, n_squares);
-	types[1].n_numbers = n_squares;
-	types[1].numbers = squares;
-
-	pentas = generate_numbers(&n_pentas, compute_penta);
-	printf("P E N T A G O N A L S (%d)\n", n_pentas);
-	print_array(pentas, n_pentas);
-	types[2].n_numbers = n_pentas;
-	types[2].numbers = pentas;
-
-	hexas = generate_numbers(&n_hexas, compute_hexa);
-	printf("H E X A G O N A L S (%d)\n", n_hexas);
-	print_array(hexas, n_hexas);
-	types[3].n_numbers = n_hexas;
-	types[3].numbers = hexas;
-
-	heptas = generate_numbers(&n_heptas, compute_hepta);
-	printf("H E P T A G O N A L S (%d)\n", n_heptas);
-	print_array(heptas, n_heptas);
-	types[4].n_numbers = n_heptas;
-	types[4].numbers = heptas;
-
-	octas = generate_numbers(&n_octas, compute_octa);
-	printf("O C T A G O N A L S (%d)\n", n_octas);
-	print_array(octas, n_octas);
-	types[5].n_numbers = n_octas;
-	types[5].numbers = octas;
-
-	found = 0;
-	i = 0;
-	while(!found && i < 720)
+	found = answer = 0;
+	while(!found)
 	{
-		answer = 0;
-
-		printf("perm #%d:", i);
-		print_array(permutations, CYCLE_LENGTH);
-
 		for (n1 = 0; n1 < types[permutations[0]].n_numbers; ++n1)
 		{
 			for (n2 = 0; n2 < types[permutations[1]].n_numbers; ++n2)
@@ -196,13 +153,6 @@ int32_t main(void)
 								 || types[permutations[5]].numbers[n6]%100 != types[permutations[0]].numbers[n1]/100)
 									continue;
 
-								/*printf("it matches %d %d %d %d %d %d\n",
-									types[permutations[0]].numbers[n1],
-									types[permutations[1]].numbers[n2],
-									types[permutations[2]].numbers[n3],
-									types[permutations[3]].numbers[n4],
-									types[permutations[4]].numbers[n5],
-									types[permutations[5]].numbers[n6]);*/
 								answer = types[permutations[0]].numbers[n1];
 								answer += types[permutations[1]].numbers[n2];
 								answer += types[permutations[2]].numbers[n3];
@@ -222,14 +172,10 @@ int32_t main(void)
 
 	}
 
-	print_array(types[0].numbers, types[0].n_numbers);
 	printf("Problem 61: %d\n", answer);
 
-	free(triangles);
-	free(squares);
-	free(pentas);
-	free(hexas);
-	free(heptas);
-	free(octas);
+	for (i = 0; i < CYCLE_LENGTH; ++i)
+		free(types[i].numbers);
+
 	return 0;
 }
