@@ -6,10 +6,8 @@
 #define MAX 10000
 #define CYCLE_LENGTH 6
 
-struct type {
-	int32_t n_numbers;
-	int32_t *numbers;
-};
+int32_t count[CYCLE_LENGTH];
+int32_t *numbers[CYCLE_LENGTH];
 
 /* compute_triangle: return the n-th triangle number */
 int32_t compute_triangle(int32_t n) {return n * (n + 1) / 2;}
@@ -107,58 +105,57 @@ int32_t next_permutation(int32_t *ar, int32_t size)
 
 int32_t main(void)
 {
-	int32_t permutations[CYCLE_LENGTH], i, answer, found;
+	int32_t s[CYCLE_LENGTH], i, answer, found;
 	int32_t n1, n2, n3, n4, n5, n6;
-	struct type types[CYCLE_LENGTH];
 
-	/* fill permutations array with 0,1,2,3... */
+	/* fill s array with 0,1,2,3... */
 	for (i = 0; i < CYCLE_LENGTH; ++i)
-		permutations[i] = i;
+		s[i] = i;
 
-	types[0].numbers = generate_numbers(&types[0].n_numbers, compute_triangle);
-	types[1].numbers = generate_numbers(&types[1].n_numbers, compute_square);
-	types[2].numbers = generate_numbers(&types[2].n_numbers, compute_penta);
-	types[3].numbers = generate_numbers(&types[3].n_numbers, compute_hexa);
-	types[4].numbers = generate_numbers(&types[4].n_numbers, compute_hepta);
-	types[5].numbers = generate_numbers(&types[5].n_numbers, compute_octa);
+	numbers[0] = generate_numbers(&count[0], compute_triangle);
+	numbers[1] = generate_numbers(&count[1], compute_square);
+	numbers[2] = generate_numbers(&count[2], compute_penta);
+	numbers[3] = generate_numbers(&count[3], compute_hexa);
+	numbers[4] = generate_numbers(&count[4], compute_hepta);
+	numbers[5] = generate_numbers(&count[5], compute_octa);
 
 	found = answer = 0;
 	while(!found)
 	{
-		for (n1 = 0; n1 < types[permutations[0]].n_numbers; ++n1)
+		for (n1 = 0; n1 < count[s[0]]; ++n1)
 		{
-			for (n2 = 0; n2 < types[permutations[1]].n_numbers; ++n2)
+			for (n2 = 0; n2 < count[s[1]]; ++n2)
 			{
-				if (types[permutations[0]].numbers[n1]%100 != types[permutations[1]].numbers[n2]/100)
+				if (numbers[s[0]][n1]%100 != numbers[s[1]][n2]/100)
 					continue;
 
-				for (n3 = 0; n3 < types[permutations[2]].n_numbers; ++n3)
+				for (n3 = 0; n3 < count[s[2]]; ++n3)
 				{
-					if (types[permutations[1]].numbers[n2]%100 != types[permutations[2]].numbers[n3]/100)
+					if (numbers[s[1]][n2]%100 != numbers[s[2]][n3]/100)
 						continue;
 
-					for (n4 = 0; n4 < types[permutations[3]].n_numbers; ++n4)
+					for (n4 = 0; n4 < count[s[3]]; ++n4)
 					{
-						if (types[permutations[2]].numbers[n3]%100 != types[permutations[3]].numbers[n4]/100)
+						if (numbers[s[2]][n3]%100 != numbers[s[3]][n4]/100)
 							continue;
 
-						for (n5 = 0; n5 < types[permutations[4]].n_numbers; ++n5)
+						for (n5 = 0; n5 < count[s[4]]; ++n5)
 						{
-							if (types[permutations[3]].numbers[n4]%100 != types[permutations[4]].numbers[n5]/100)
+							if (numbers[s[3]][n4]%100 != numbers[s[4]][n5]/100)
 								continue;
 
-							for (n6 = 0; n6 < types[permutations[5]].n_numbers; ++n6)
+							for (n6 = 0; n6 < count[s[5]]; ++n6)
 							{
-								if (types[permutations[4]].numbers[n5]%100 != types[permutations[5]].numbers[n6]/100
-								 || types[permutations[5]].numbers[n6]%100 != types[permutations[0]].numbers[n1]/100)
+								if (numbers[s[4]][n5]%100 != numbers[s[5]][n6]/100
+								 || numbers[s[5]][n6]%100 != numbers[s[0]][n1]/100)
 									continue;
 
-								answer = types[permutations[0]].numbers[n1];
-								answer += types[permutations[1]].numbers[n2];
-								answer += types[permutations[2]].numbers[n3];
-								answer += types[permutations[3]].numbers[n4];
-								answer += types[permutations[4]].numbers[n5];
-								answer += types[permutations[5]].numbers[n6];
+								answer = numbers[s[0]][n1];
+								answer += numbers[s[1]][n2];
+								answer += numbers[s[2]][n3];
+								answer += numbers[s[3]][n4];
+								answer += numbers[s[4]][n5];
+								answer += numbers[s[5]][n6];
 								found = 1;
 							}
 						}
@@ -167,7 +164,7 @@ int32_t main(void)
 			}
 		}
 
-		next_permutation(permutations, CYCLE_LENGTH);
+		next_permutation(s, CYCLE_LENGTH);
 		++i;
 
 	}
@@ -175,7 +172,7 @@ int32_t main(void)
 	printf("Problem 61: %d\n", answer);
 
 	for (i = 0; i < CYCLE_LENGTH; ++i)
-		free(types[i].numbers);
+		free(numbers[i]);
 
 	return 0;
 }
