@@ -35,7 +35,8 @@ int32_t chain_contains_89(int32_t n)
 	return n == 89;
 }
 
-/* compute number of times an integer ends with 89 when squaring its digits */
+/* count number of integers that have 89 in the chain created by recursively
+ * summing the square of their digits */
 int32_t main(void)
 {
 	int32_t i, count = 0;
@@ -44,7 +45,6 @@ int32_t main(void)
 	{
 		if (chain_contains_89(i))
 		{
-
 			/* mark it as seen so when we encounter it again in a
 			 * chain, we know it will ends at 89 */
 			arrive_at_89[i] = 1;
