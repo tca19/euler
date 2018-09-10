@@ -13,7 +13,7 @@ int32_t is_valid(int64_t n)
 
 	for (i = 9; i > 0; --i)
 	{
-		n /= 100; /* only 1 out of 2 digits is interesting */
+		n /= 100; /* only 1 out of 2 digits matters */
 		if (n%10 != i)
 			return 0;
 	}
@@ -21,18 +21,20 @@ int32_t is_valid(int64_t n)
 	return 1;
 }
 
-/* find the unique integer n such that t n*n is like 1_2_3_4_5_6_7_8_9_0 */
+/* find the unique integer n such that n*n is like 1_2_3_4_5_6_7_8_9_0 */
 int main(void)
 {
 	int64_t n;
 
-	/* The lowest possibility of pattern is x1 = 1020304050607080900. Since
-	 * this pattern is n*n, then the lowest possibility for n is sqrt(x1).
-	 * The largest possibility of pattern is x2 = 1929394959697989990. Since
-	 * this pattern is n*n, then the largest possibility for n is sqrt(x2).
+	/* The lowest possibility for pattern is x1 = 1020304050607080900. Since
+	 * this pattern must be n*n, then the lowest possibility for n is
+	 * sqrt(x1). The largest possibility for pattern is x2 =
+	 * 1929394959697989990. Since this pattern must n*n, then the largest
+	 * possibility for n is sqrt(x2).
 	 *
-	 * n*n must end with 0. This is only possible when n%10 = 0. Since LOW
-	 * is already LOW%10 = 10, step is set to 10. */
+	 * n*n must end with 0 (because the given pattern ends with 0). This is
+	 * only possible when n%10 = 0. Since LOW already verifies LOW%10 = 10,
+	 * increasing step is set to 10. */
         for (n = LOW; n < HIGH; n += 10)
 		if (is_valid(n*n))
 			break;
