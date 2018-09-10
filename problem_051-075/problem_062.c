@@ -3,13 +3,13 @@
 #include <stdint.h>
 #include <string.h>
 
-#define MAXLEN  20
-#define MAXSIZE 20000
+#define MAXLEN  15
+#define MAXSIZE 10000
 
-struct pair
+struct permutation
 {
-	char* permutation;
-	int32_t count;
+	char* repr;
+	int8_t count;
 	int64_t smallest;
 };
 
@@ -41,22 +41,24 @@ char* largest_permutation(int64_t n)
 	return permutation;
 }
 
-/* insert: insert permutation in table ar. If already in, return its
- * count */
-int32_t insert(struct pair *ar, char *permutation, int64_t n, int32_t *size)
+/* insert: insert the largest permutation formed by n^3 or increment its count.
+ * Return the corresponding index (the one inserted or the ones incremented). */
+int32_t insert(struct permutation *ar, int64_t n, int32_t *size)
 {
 	int32_t i;
-	for (i = 0; i < *size; ++i)
-		if (strcmp(ar[i].permutation, permutation) == 0)
+	char *permutation = largest_permutation(n*n*n);
+
+	for (i = 0; i < *size; ++i, ++ar)
+		if (strcmp(ar->repr, permutation) == 0)
 		{
-			ar[i].count++;
+			ar->count++;
 			return i;
 		}
 
-	ar[*size].permutation = permutation;
-	ar[*size].count = 1;
-	ar[*size].smallest = n*n*n;
-	(*size)++; /* increase size because have put 1 more element in ar */
+	ar->repr = permutation;
+	ar->count = 1;
+	ar->smallest = n*n*n;
+	(*size)++; /* increase size because 1 more element in ar */
 	return *size-1;
 }
 
@@ -66,13 +68,14 @@ int32_t main(void)
 {
 	int32_t index, size;
 	int64_t i;
-	struct pair *list;
+	struct permutation *list;
 
 	size = 0;
 	list = calloc(MAXSIZE, sizeof *list);
+
 	for (i = 345; i < MAXSIZE; ++i)
 	{
-		index = insert(list, largest_permutation(i*i*i), i, &size);
+		index = insert(list, i, &size);
 		if (list[index].count == 5)
 		{
 			printf("Problem 62: %ld\n", list[index].smallest);
