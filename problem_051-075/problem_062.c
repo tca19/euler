@@ -8,12 +8,11 @@
 
 struct permutation
 {
-	char* repr;
-	int8_t count;
-	int64_t smallest;
-	struct permutation *next;
+	char* repr;          /* string representation of the permutation */
+	int8_t count;        /* number of time this permutation has been seen */
+	int64_t smallest;    /* smallest integer producing this permutation */
+	struct permutation *next; /* pointer to next permutation (in hashtab) */
 };
-
 
 /* hash: return the hash of string s */
 uint32_t hash(char *s)
@@ -28,31 +27,34 @@ uint32_t hash(char *s)
 /* largest_permutation: return largest permutation formed with digits of n */
 char* largest_permutation(int64_t n)
 {
-	int32_t i, j;
+	int32_t i, pos;
 	int8_t digits[10] = {0};
 	char *permutation = malloc(MAXLEN);
 
-	/* count digits of n */
+	/* count occurrence of each digit (0-9) in n */
 	while (n > 0)
 	{
 		++digits[n%10];
 		n /= 10;
 	}
 
-	/* add digits into permutation starting with largest digits */
-	for (i = 9, j = 0; i > -1 && j < MAXLEN; --i)
+	/* add digits into permutation, start with largest digits */
+	for (i = 9, pos = 0; i > -1 && pos < MAXLEN; --i)
 	{
-		if (digits[i] == 0)
+		if (digits[i] == 0) /* not added if not present in n */
 			continue;
 
 		while (digits[i]-- > 0)
-			permutation[j++] = '0' + i;
+			permutation[pos++] = '0' + i;
 	}
 
-	permutation[j] = '\0';
+	permutation[pos] = '\0';
 	return permutation;
 }
 
+/* insert: insert the largest permutation created with n*n*n into hastab. If
+ * already in, increment its count. Return the created or existing permutation
+ * produced with n*n*n */
 struct permutation* insert(struct permutation **hashtab, int64_t n)
 {
 	char *representation;
@@ -62,19 +64,7 @@ struct permutation* insert(struct permutation **hashtab, int64_t n)
 	representation = largest_permutation(n*n*n);
 	hashval = hash(representation);
 
-	/* never added the representation into hashtab, so add it */
-	if (hashtab[hashval] == NULL)
-	{
-		p = (struct permutation *) malloc(sizeof *p);
-		p->repr = representation;
-		p->count = 1;
-		p->smallest = n*n*n;
-		p->next = NULL;
-		hashtab[hashval] = p;
-		return p;
-	}
-
-	/* hashval has already been seen, look if already in hashtab */
+	/* look into hashtab if the representation is already in */
 	for (p = hashtab[hashval]; p != NULL; p = p->next)
 	{
 		if (strcmp(p->repr, representation) == 0) /* found */
@@ -84,7 +74,7 @@ struct permutation* insert(struct permutation **hashtab, int64_t n)
 		}
 	}
 
-	/* not already in, add it at top of hashtab[hashval] */
+	/* not already in, add it at the top of hashtab[hashval] */
 	p = (struct permutation *) malloc(sizeof *p);
 	p->repr = representation;
 	p->count = 1;
