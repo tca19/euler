@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#define SIZE 100 /* because need to go to the 100th term */
+
 /* swap: swap the content of variables a and b */
 void swap(int32_t *a, int32_t *b)
 {
@@ -36,8 +38,17 @@ void continued_fraction(int32_t n, int32_t *coef, int32_t *num, int32_t *den)
 
 int32_t main(void)
 {
-	int32_t num, den;
-	int32_t coefs[] = {2, 1, 2, 1, 1, 4, 1, 1, 6, 1};
+	int32_t i, num, den, coefs[SIZE] = {0};
+
+	/* init the coef. Start with 2, then pattern is (1,2k,1) repeated */
+	coefs[0] = 2;
+	for (i = 1; i < SIZE; ++i)
+	{
+		if (i%3 == 2)
+			coefs[i] = 2 * (i+1) / 3;
+		else
+			coefs[i] = 1;
+	}
 
 	continued_fraction(10, coefs, &num, &den);
 	printf("%d/%d\n", num, den);
