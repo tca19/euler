@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define SIZE 6 /* because need to go to the 100th term */
+#define SIZE 100 /* because need to go to the 100th term */
 
 /* swap: swap the content of arrays a and b */
 void swap(int32_t *a, int32_t *b)
@@ -29,52 +29,63 @@ void add(int32_t *num, int32_t *den, int32_t x)
 	}
 }
 
-/* continued_fraction: compute n-th term of continued fraction with the coefs */
-/*void continued_fraction(int32_t n, int32_t *coef, int32_t *num, int32_t *den)
+/* sum_digits: return the sum of digits in array ar */
+int32_t sum_digits(int32_t *ar)
 {
-	int32_t i;
+	int32_t i, s;
+
+	for (i = 0, s = 0; i < SIZE; ++i)
+		s += ar[i];
+	return s;
+}
+
+/* continued_fraction: compute n-th term of continued fraction with the coefs */
+void continued_fraction(int32_t n, int32_t *coef, int32_t *num, int32_t *den)
+{
+	int32_t i, j;
 
 	if (n < 1)
+	{
+		printf("error: can't compute a negative n-th term (n=%d)\n", n);
 		return;
+	}
 
-	*num = coef[n-1];
-	*den = 1;
+	/* reset num and den to 0 */
+	memset(num, 0, SIZE * sizeof *num);
+	memset(den, 0, SIZE * sizeof *den);
+
+	/* copy coef[n-1] into num */
+	for (i = 0, j = coef[n-1]; j > 0 && i < SIZE; ++i, j /= 10)
+		num[i] = j%10;
+
+	/* init den to 1 */
+	den[0] = 1;
+
 	for (i = n-2; i >= 0; --i)
 	{
 		swap(num, den);
-		add(num, den, &(coef[i]));
+		add(num, den, coef[i]);
 	}
-}*/
+}
 
+/* find the sum of digits in the 100th term of continued fraction of e */
 int32_t main(void)
 {
-	/*int32_t i, num, den, coefs[SIZE] = {0};*/
-	int32_t i;
-	int32_t a[SIZE] = {3, 2, 1, 0, 0, 0};
-	int32_t b[SIZE] = {6, 5, 4, 0, 0, 0};
+	int32_t i, num[SIZE], den[SIZE], coefs[SIZE];
 
-	/* init the coef. Start with 2, then pattern is (1,2k,1) repeated */
-	/*coefs[0] = 2;
+	/* init the coef. Start with 2; then pattern is (1,2k,1) repeated */
+	coefs[0] = 2;
 	for (i = 1; i < SIZE; ++i)
 	{
 		if (i%3 == 2)
 			coefs[i] = 2 * (i+1) / 3;
 		else
 			coefs[i] = 1;
-	}*/
+	}
 
-	add(a, b, 17);
-	for (i = 0; i < 6; ++i)
-		printf("%d ", a[i]);
-	printf("\n");
-	for (i = 0; i < 6; ++i)
-		printf("%d ", b[i]);
+	/* compute the 100th term, num and den values are set in function */
+	continued_fraction(100, coefs, num, den);
 
-
-
-
-	/*continued_fraction(10, coefs, &num, &den);
-	printf("%d/%d\n", num, den);*/
-
+	printf("Problem 65: %d\n", sum_digits(num));
 	return 0;
 }
