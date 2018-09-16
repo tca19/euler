@@ -11,13 +11,16 @@ int32_t main(void)
 	int32_t i, j, partitions[LIM] = {0}, pentagonal[LIM] = {0};
 
 	/* init the array with generalized pentagonal numbers. Stop once
-	 * pentagonal[i] > LIM because the formula to compute partitions[n],
+	 * pentagonal[j] > LIM because the formula to compute partitions[n],
 	 * uses partitions[n-k] where k is a pentagonal number and n=1..LIM, so
 	 * at one point, n-k will be negative and partitions[<0] = 0. */
-	for (i = 1, j = 0; j < LIM; ++i)
+	for (i = 1, j = 0; i < LIM; ++i, ++j)
 	{
-		pentagonal[j++] = i * (3*i-1) / 2;
-		pentagonal[j++] = i * (3*i+1) / 2;
+		pentagonal[j] = i * (3*i-1) / 2;
+		if (pentagonal[j] > LIM)
+			break;
+
+		pentagonal[++j] = i * (3*i+1) / 2; /* ++j = move to next cell */
 		if (pentagonal[j] > LIM)
 			break;
 	}
