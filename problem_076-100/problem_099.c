@@ -7,9 +7,15 @@
 /* fint the pair (base,exp) producing the largest value base^exp */
 int32_t main(void)
 {
+	/* computing the value base^exp for each pair is not feasible in
+	 * resonable time (some values have 3 million digits). So instead of
+	 * finding the largest base^exp, it applies the log function and finds
+	 * the largest log(base^exp) = exp * log(base). Since log is strictly
+	 * increasing, it preserves the order (so if base1^exp1 > base2^exp2,
+	 * then log(base1^exp1) > log(base2^exp2) */
 	FILE *f;
-	int32_t base, exp, index, best_index;
-	double val, best_val;
+	int32_t base, exp, index, largest_index;
+	double val, largest_val;  /* save largest log(base^exp) and its index */
 
 	f = fopen(FILENAME, "r");
 	if (f == NULL)
@@ -18,24 +24,24 @@ int32_t main(void)
 		return -1;
 	}
 
-	/* init best_* with first pair */
+	/* init largest_* with first pair of input file */
 	fscanf(f, "%d,%d", &base, &exp);
-	best_val   = (float) exp * log(base);
-	best_index = 1; /* when counting line, start at 1, not 0 */
+	largest_val   = (float) exp * log(base);
+	largest_index = 1; /* when counting line, start at 1, not 0 */
 
 	index = 2;
 	while (fscanf(f, "%d,%d", &base, &exp) != EOF)
 	{
 		val = (float) exp * log(base);
-		if (val > best_val)
+		if (val > largest_val)
 		{
-			best_val   = val;
-			best_index = index;
+			largest_val   = val;
+			largest_index = index;
 		}
 		++index;
 	}
 
-	printf("Problem 99: %d\n", best_index);
+	printf("Problem 99: %d\n", largest_index);
 
 	fclose(f);
 	return 0;
